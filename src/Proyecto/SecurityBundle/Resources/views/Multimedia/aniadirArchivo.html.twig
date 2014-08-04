@@ -1,0 +1,15 @@
+{% form_theme formMultimedia 'ProyectoSecurityBundle:Forms:fields.html.twig' %}
+<form action="{{ path('aniadir_multimedia', {'idConcepto' : idConcepto })}}" method="post" {{ form_enctype(formMultimedia) }} role="form" >
+    {{ form_widget(formMultimedia) }}
+    <div class="text-center">
+        <button id="aniadirMultimedia" type="submit" class="btn btn-primary btn-lg"> Añadir</button>
+    </div>
+</form>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#aniadirMultimedia').submit(function(event){
+                event.preventDefault(); //cancela el comportamiento por defecto
+                $('#lista-multimedia').load('{{ path('lista_multimedia', {'idConcepto' : idConcepto }) }}');
+        });
+    });
+</script>

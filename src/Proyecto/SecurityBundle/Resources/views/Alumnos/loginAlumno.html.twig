@@ -1,0 +1,18 @@
+{% extends "::base.html.twig" %}
+{% block title %}Login Alumno {% endblock %}
+{% block body %}
+        <div style="width: 600px;margin: 0 auto;text-align: center;">    
+            
+            <form action="{{ path('seleccionar_actividad') }}" method="post">
+                <h2>¿Quién eres?</h2>
+                <input type="text" id="username" name="username" value="" />
+                <br style="margin-bottom: 20px;">
+            <button type="submit" class="btn btn-primary btn-lg">Acceder</button>
+            </form>
+            {% if error is defined %} <span class="alert-error">{{ error }}</span> {% endif %}
+            <br/>
+            <div class="estilo">
+                <a href="{{path('login_especialista')}}">¿Eres especialista? Pincha aqui.</a>
+            </div>
+        </div>
+        {% endblock %}

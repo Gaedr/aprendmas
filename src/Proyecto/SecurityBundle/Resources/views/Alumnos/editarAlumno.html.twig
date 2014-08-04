@@ -1,0 +1,19 @@
+{% extends "::base.html.twig" %}
+{% form_theme form 'ProyectoSecurityBundle:Forms:fields.html.twig' %}
+{% block title %}Editar Alumno {% endblock %}
+{% block body %}
+<a href="{{ path('perfil') }}" title="Volver a Perfil" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Volver a Perfil</a>
+<hr class="divider"/>   
+    <div class="row">         
+        <div class="col-md-12">
+            <form action="{{ path('actualizar_alumno', {'idAlumno' : idAlumno })}}" method="post" {{ form_enctype(form) }} class="" role="form">
+                {{ form_widget(form) }}
+                <div class="text-center">
+                    <button id="actualizar" type="submit" class="btn btn-primary"> Modificar</button>
+                </div>
+            </form>
+        </div> 
+    </div>
+
+{% endblock %}
+

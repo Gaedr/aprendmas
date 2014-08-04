@@ -1,0 +1,55 @@
+{% extends "::base.html.twig" %}
+{%set busqueda = ' ' %}
+{% form_theme form 'ProyectoSecurityBundle:Forms:fields.html.twig' %}
+{% block title %}Crear Actividad {% endblock %}
+{% block stylesheets %}{#
+<link rel="stylesheet" href="//cdn.jsdelivr.net/select2/3.4.8/select2.css">
+<script src="//cdn.jsdelivr.net/select2/3.4.8/select2.js"></script>
+<script src="//cdn.jsdelivr.net/select2/3.4.8/select2.min.js"></script>
+<script>
+    $(document).ready(function() { 
+        $("#actividad_form_conceptosActividad").select2(); 
+    });
+
+</script>#}
+{% endblock %}
+{% block body %} 
+    <div class="row">        
+        <div class="col-md-7">
+            <h3>Lista de actividades</h3>
+            <div id="lista-actividad"></div>
+        </div>
+         
+        <div class="col-md-5 well">
+            <h3>Añadir Actividad</h3>
+            <form id="formulario" action="{{ path('alta_actividad')}}" method="post" {{ form_enctype(form) }} role="form">
+            {{ form_widget(form) }}
+                {% if response is defined%}
+                    {% if response.success == true %}
+                    <div  id="mensaje" class="alert alert-success">{{ response.message }}</div>
+                    {% else %}
+                    <div  id="mensaje" class="alert alert-error">{{ response.message }}</div>
+                    {% endif %}
+                {% endif %}
+                    <div class="text-center">
+                         <button id="aniadir" type="submit" class="btn btn-primary btn-lg" role="button">Añadir</button>
+                    </div>                       
+            </form>
+            <div id="null" ></div>
+        </div> 
+    </div>
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function() {
+        setTimeout(function(){ $('#mensaje').hide('slow');},3000);
+        $('#lista-actividad').load('{{ path('lista_actividad') }}');
+        
+        $('#aniadir').submit(function(event){
+            event.preventDefault(); //cancela el comportamiento por defecto
+            $('#lista-actividad').load('{{ path('lista_actividad') }}');
+        });
+    });
+</script>
+{% endblock %}

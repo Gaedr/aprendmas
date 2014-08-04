@@ -1,0 +1,33 @@
+{% extends "::base.html.twig" %}
+{% form_theme form 'ProyectoSecurityBundle:Forms:fields.html.twig' %}
+{% block title %}Editar Concepto {% endblock %}
+{% block body %}
+<a href="{{ path('alta_concepto') }}" title="Volver a Conceptos" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Volver a Conceptos</a>
+<hr class="divider"/>   
+    <div class="row">         
+        <div class="col-md-12">
+            <form action="{{ path('actualizar_concepto', {'idConcepto' : idConcepto })}}" method="post" {{ form_enctype(form) }} class="" role="form">
+                {{ form_widget(form) }}
+                <div class="text-center">
+                    <button id="actualizar" type="submit" class="btn btn-primary btn-lg"> Modificar</button>
+                </div>
+            </form>
+        </div> 
+    </div>
+<div class="row" style="margin-top: 10px;">
+    <div id="lista-multimedia" class="col-md-8">        
+    </div>
+    <div id="form-multimedia" class="col-md-4 well">        
+    </div>
+</div>
+    
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#lista-multimedia').load('{{ path('lista_multimedia', {'idConcepto' : idConcepto }) }}');
+        $('#form-multimedia').load('{{ path('aniadir_multimedia', {'idConcepto' : idConcepto }) }}');
+    });
+</script>
+{% endblock %}

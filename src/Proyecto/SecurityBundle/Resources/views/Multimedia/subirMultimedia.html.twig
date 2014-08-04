@@ -1,0 +1,10 @@
+{% extends "::base.html.twig" %}
+{% form_theme form 'ProyectoSecurityBundle:Forms:fields.html.twig' %}
+{% block title %}Subir Contenido {% endblock %}
+{% block body %}
+<form action="#" method="post" {{ form_enctype(form) }}>
+    {{ form_widget(form) }}
+
+    <input type="submit" value="Añadir" class="btn" />
+</form>
+  {% endblock %}  

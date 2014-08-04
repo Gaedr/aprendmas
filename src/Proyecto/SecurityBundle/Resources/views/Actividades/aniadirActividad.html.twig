@@ -1,0 +1,114 @@
+{% extends "::base.html.twig" %}
+{%set busqueda = ' ' %}
+{% form_theme form 'ProyectoSecurityBundle:Forms:fields.html.twig' %}
+{% block title %}Editar Actividad : {{actividad.nombre}}{% endblock %}
+{% block stylesheets %}
+
+{% endblock %}
+{% block body %} 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/select2/3.4.8/select2.css">
+<script src="//cdn.jsdelivr.net/select2/3.4.8/select2.min.js"></script>
+
+<script>
+    $(function() { 
+        $("#conceptos_actividad_form_conceptoIzq").select2(); 
+        $("#conceptos_actividad_form_conceptoDer").select2();
+    });
+    
+    /*$(function(){
+            $("#conceptos_actividad_form_selectIzq").change(function(){
+                var data = {
+                    selector: $(this).val()
+                };
+                
+                $.ajax({
+                    type: 'post',
+                    url: '{{ path("select_multimedia") }}',
+                    data: data,
+                    success: function(data) {
+                        
+                        //if($("#conceptos_actividad_form_selectIzq").val()) == 2){
+                            //alert("Yuju");
+                            var $multimedia_selector = $('#conceptos_actividad_form_multimediaIzq');
+
+                            $multimedia_selector.html('<option>Multimedia</option>');
+
+                            for (var i=0, total = data.length; i < total; i++) {
+                                $multimedia_selector.append('<option value="' + data[i].id + '">' + data[i].path + '</option>');
+                            }
+                        //}
+                    }
+                });
+            });
+        });*/
+
+</script>
+<a href="{{ path('alta_actividad') }}" title="Volver a Actividades" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Volver a Actividades</a>
+<hr class="divider"/> 
+    <div class="row well">  
+        <h3>Añadir Actividad</h3>
+
+        <form id="formulario" action="{{ path('editar_actividad', {'idActividad' : actividad.Id})}}" method="post" {{ form_enctype(form) }} role="form">
+            <div class="col-md-6 col-xs-6">
+            {{ form_row(form.conceptoIzq) }}
+            {{ form_row(form.selectIzq) }}
+            {{ form_row(form.multimediaIzq) }}
+            </div>
+            <div class="col-md-6 col-xs-6">
+            {{ form_row(form.conceptoDer) }}
+            {{ form_row(form.selectDer) }}
+            {{ form_row(form.multimediaDer) }}
+            </div>
+            <div class="text-center">
+                 <button id="aniadir" type="submit" class="btn btn-primary btn-lg" role="button">Añadir</button>
+            </div>                       
+        </form>  
+    </div>
+    <hr class="divider"/> 
+    <div id="listaMultimedia">
+        {% if listaMultimedia | length > 0 %}
+        <table class="table table-bordered table-condensed table-striped">
+            <thead>
+                <tr><th colspan="3" class="text-center info">Izquierda</th><th colspan="3" class="text-center info">Derecha</th></tr>
+                <tr><th class="text-center info">Concepto</th><th class="text-center info">Tipo</th><th class="text-center info">Multimedia</th>
+                    <th class="text-center info">Concepto</th><th class="text-center info">Tipo</th><th class="text-center info">Multimedia</th></tr>
+            </thead>
+            <tbody>
+                {%for multimedia in listaMultimedia %}
+                <tr>
+                    <td>{{ multimedia.conceptoIzq.nombre }}</td>
+                    {% set listaSeleccion = {0:'Nombre', 1:'Descripción', 2:'Multimedia'}  %}
+                    <td class="text-center">{{ listaSeleccion[multimedia.selectIzq] }}</td>
+                    <td class="text-center">
+                        {% if multimedia.multimediaIzq is not null %}
+                            <a href="{{asset(multimedia.multimediaIzq.WebPath)}}">{{ multimedia.multimediaIzq.nombre }}</a> 
+                        {%else %}
+                            <span class="glyphicon glyphicon-remove"></span>
+                        {%endif%}
+                    </td>
+                    <td>{{ multimedia.conceptoDer.nombre }}</td>
+                    <td class="text-center">{{ listaSeleccion[multimedia.selectDer] }}</td>
+                    <td class="text-center">
+                        {% if multimedia.multimediaDer is not null %}
+                            <a href="{{asset(multimedia.multimediaDer.WebPath)}}">{{ multimedia.multimediaDer.nombre }}</a> 
+                        {%else %}
+                            <span class="glyphicon glyphicon-remove"></span>
+                        {%endif%}
+                    </td>
+                </tr>
+                
+                {% endfor %}
+            </tbody>
+        </table>
+        {%else%}
+        <span class="info">No hay conceptos asociados con esta actividad</span>
+        {%endif%}
+        
+    </div>
+    
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+</script>
+{% endblock %}

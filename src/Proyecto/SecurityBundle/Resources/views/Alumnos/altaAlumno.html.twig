@@ -1,0 +1,26 @@
+{% extends "::base.html.twig" %}
+{% form_theme form 'ProyectoSecurityBundle:Forms:fields.html.twig' %}
+{% block title %}Alta Alumno {% endblock %}
+{% block body %}  
+            <form action="{{ path('alta_alumno') }}" method="post" {{ form_enctype(form) }}>
+                {{ form_widget(form) }}
+                {% if response is defined%}
+                    {% if response.success == true %}
+                    <div  id="mensaje" class="alert alert-success">{{ response.message }}</div>
+                    {% else %}
+                    <div  id="mensaje" class="alert alert-error">{{ response.message }}</div>
+                    {% endif %}
+                {% endif %}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg"/>Crear Alumno</button>
+                    </div>
+            </form>
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript">
+    $(document).ready(function() {
+        setTimeout(function(){ $('#mensaje').hide('slow');},3000);
+    });
+</script>
+{% endblock %}

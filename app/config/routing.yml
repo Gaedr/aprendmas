@@ -1,0 +1,10 @@
+_security:
+    resource: "@ProyectoSecurityBundle/Resources/config/routing.yml"
+    prefix: /
+
+#
+#login:
+#    pattern:   /login
+#    defaults:  { _controller: ProyectoSecurityBundle:Security:login }
+#login_check:
+#    pattern:   /login_check

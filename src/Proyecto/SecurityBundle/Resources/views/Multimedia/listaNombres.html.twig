@@ -1,0 +1,19 @@
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form) }}
+                    {{ form_errors(form) }}
+                    {{ form_widget(form) }}
+                </div>
+                <p><strong>Multimedias</strong>: {{ data|join(', ') }}</p>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">
+                        Enviar
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

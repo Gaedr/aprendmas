@@ -1,0 +1,41 @@
+<div {% if listaMultimedia | length >0 %} style="max-height: 380px; overflow-y: scroll;" {% endif %} id="thumbnails" class="yoxview">   
+     {% if listaMultimedia | length >0 %}
+        <table class="table table-bordered table-condensed table-striped">
+            <thead>
+                <tr><th>Tipo</th><th>Nombre</th><th>Ver</th><th>Borrar</th></tr>
+            </thead>
+            <tbody>
+        {% endif %}
+        {% for concept in listaMultimedia %}
+            {%  set tipo = 'glyphicon-question-sign' %}   
+            {% if listaMime[loop.index0] ==  'image/png' or listaMime[loop.index0] ==  'image/jpeg' or listaMime[loop.index0] ==  'image/gif' or listaMime[loop.index0] ==  'image/bmp' %}
+                {%  set tipo = 'glyphicon-picture' %}
+            {% elseif listaMime[loop.index0] ==  'audio/mpeg' or listaMime[loop.index0] ==  'audio/ogg' or listaMime[loop.index0] ==  'audio/wav' or listaMime[loop.index0] == 'application/octet-stream'%}
+                {%  set tipo = 'glyphicon-music' %}
+            {% elseif listaMime[loop.index0] ==  'video/mp4' or listaMime[loop.index0] ==  'video/webm' or listaMime[loop.index0] ==  'video/ogg'  %}
+                {%  set tipo = 'glyphicon-film' %}
+            {%endif%} 
+                <tr>
+                    <td class="col-md-1 text-center"><span class="glyphicon {{ tipo }}" alt="{{ listaMime[loop.index0] }}"></span></td>
+                    <td>{{ concept.nombre}}</td>
+                    <td class="col-md-1 text-center"><a href="{{ asset(concept.WebPath) }}" class=""><span class="glyphicon glyphicon-eye-open"></span></a></td>
+                    <td class="col-md-1 text-center"><a class="eliminar" href="{{ path('eliminar_multimedia', {'idConcepto' : idConcepto, 'idMultimedia' : concept.id}) }}" alt="Eliminar"> <span class="glyphicon glyphicon-trash"></span></a></td>
+                </tr>
+        {%else%}
+        <div class="col-md-12 alert-info text-center">No hay ningún elemento asociado a este concepto</div>
+        
+        {% endfor %}
+     {% if listaMultimedia | length >0 %}</tbody></table>{% endif %}
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#thumbnails").yoxview({
+            backgroundColor: 'Blue',
+            playDelay: 5000
+        });
+        $('a.eliminar').click(function(event){
+            event.preventDefault(); //cancela el comportamiento por defecto
+            $('#lista-multimedia').load('{{ path('lista_multimedia', {'idConcepto' : idConcepto }) }}');
+        });
+    }
+</script>

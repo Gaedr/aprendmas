@@ -1,0 +1,13 @@
+{% extends "::base.html.twig" %}
+{% block title %}Usuario creado correctamente {% endblock %}
+{% block body %} 
+<div class="col-md-12">
+    <div class="">
+    Su usuario ha sido creado correctamente, puede ahora iniciar sesión a través del siguiente enlace:
+    </div>
+    <br/>
+    <div class="text-center">
+        <a href="{{ path('login_especialista') }}" class="btn btn-primary btn-lg">Iniciar sesión</a>
+    </div>
+</div>
+{% endblock %}

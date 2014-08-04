@@ -1,0 +1,62 @@
+{% extends "::base.html.twig" %}
+{% block title %}¡Bienvenido {{alumno.nombre}}!{% endblock %}
+{% block stylesheets %}
+{# $alumno->getWebPath() == '' || null === $alumno->getWebPath() #}
+    {% if alumno.webPath is not null %}
+    <style type="text/css">
+        body{
+            background: url('{{ asset(alumno.WebPath) }}') transparent content-box;
+        }
+    </style>
+    {% endif %}
+    
+{%endblock%}
+{% block body %}
+    <script type="text/javascript" src="{{asset('js/jquery.quicksearch.js')}}"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('input#busqueda').quicksearch('table tbody tr',{
+                'noResults':  '#noResults'
+            });
+
+
+        });
+    </script>
+<h3>Lista de actividades</h3>
+<div class="">    
+    <input class="form-control" type="text"  placeholder="Buscar" id="busqueda">
+</div>
+<br/>
+<div style="max-height: 450px; overflow-y: scroll;">
+    <table class="table table-striped table-bordered table-condensed table-responsive ">
+    <thead>
+        <tr class="info"><th>Nombre</th><th>Descripción</th><th>Empezar</th></tr>
+    </thead>
+    <tbody>
+        <tr id="noResults"><td>No hay resultados</td></tr>
+    {% for activity in listaActividades %}
+        <tr id="{{ activity.nombre }}">
+            <td class="col-md-4">{{ activity.nombre }}</td>
+            <td>{{ activity.descripcion }}</td>  
+            
+            <td class="col-md-1 text-center"><a href="{{ path('iniciar_juego', {'idActividad' : activity.Id, 'idAlumno' : alumno.Id})}}" title="Empezar" class="aniadir btn btn-small"><span class="glyphicon glyphicon-play"></span></a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+</div>
+{% endblock %}
+{% block javascrips %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('a.eliminar').click(function(event){
+            event.preventDefault(); //cancela el comportamiento por defecto
+            $('#null').load($(this).attr('href'));
+            $('#seleccionar-actividad').load('{{ path('seleccionar_actividad') }}');
+        });
+    }
+</script>
+{% endblock %}
+
+
+

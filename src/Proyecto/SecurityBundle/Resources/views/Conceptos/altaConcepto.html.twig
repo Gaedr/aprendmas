@@ -1,0 +1,50 @@
+{% extends "::base.html.twig" %}
+{%set busqueda = ' ' %}
+{% form_theme form 'ProyectoSecurityBundle:Forms:fields.html.twig' %}
+{% block title %}Crear Concepto {% endblock %}
+{% block body %} 
+    <div class="row">        
+        <div class="col-md-7">
+            <h3>Lista de conceptos</h3>
+            <div id="lista-conceptos"></div>
+        </div>
+         
+        <div class="col-md-5">
+            <h3>Añadir Concepto</h3>
+            <form id="formulario" action="{{ path('alta_concepto')}}" method="post" {{ form_enctype(form) }} role="form">
+            {{ form_widget(form) }}
+                {% if response is defined%}
+                    {% if response.success == true %}
+                    <div  id="mensaje" class="alert alert-success">{{ response.message }}</div>
+                    {% else %}
+                    <div  id="mensaje" class="alert alert-error">{{ response.message }}</div>
+                    {% endif %}
+                {% endif %}
+                    <div class="text-center">
+                         <button id="aniadir" type="submit" class="btn btn-primary btn-lg" role="button">Añadir</button>
+                    </div>                       
+            </form>
+            <div id="null" ></div>
+        </div> 
+    </div>
+{% endblock %}
+{% block javascripts %}
+<script type="text/javascript">
+    
+    $(function () {                
+        setTimeout(function(){ $('#mensaje').hide('slow');},3000);
+        $('#lista-conceptos').load('{{ path('lista_conceptos') }}');
+        
+        $('#aniadir').submit(function(event){
+            event.preventDefault(); //cancela el comportamiento por defecto
+            $('#lista-conceptos').load('{{ path('lista_conceptos') }}');
+        });
+        $('a.eliminar').click(function(event){
+            event.preventDefault(); //cancela el comportamiento por defecto
+            $('#null').load($(this).attr('href'));
+            $('#lista-conceptos').load('{{ path('lista_conceptos') }}');
+        });
+    });
+</script>
+
+{% endblock %}

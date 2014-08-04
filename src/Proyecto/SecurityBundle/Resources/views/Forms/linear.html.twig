@@ -1,0 +1,9 @@
+{% block form_row %}
+{% spaceless %}
+        {{ form_label(form) }}
+        {{ form_errors(form) }}
+        <div class="controls">
+            {{ form_widget(form, {'attr' : {'class' : 'input-xlarge'} })}}
+        </div>
+{% endspaceless %}
+{% endblock form_row %}

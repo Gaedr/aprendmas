@@ -1,0 +1,7 @@
+Proyecto\SecurityBundle\Entity\Multimedia:
+    properties:
+        archivo:
+            - File:
+                maxSize: 60000000
+
+

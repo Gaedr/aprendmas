@@ -1,0 +1,155 @@
+#proyecto_security_homepage:
+#    pattern:  /hello/{name}
+#    defaults: { _controller: ProyectoSecurityBundle:Default:index }
+
+login:
+    pattern:   /login
+    defaults:  { _controller: ProyectoSecurityBundle:Default:index }
+login_check:
+    pattern:   /login_check
+
+logout:
+    pattern: /logout
+
+#Especialista
+login_especialista:
+    defaults: {_controller: ProyectoSecurityBundle:Default:index }
+    pattern: /loginEspecialista
+    
+alta_especialista:
+    pattern:  /especialista/alta
+    defaults: { _controller: ProyectoSecurityBundle:Especialista:crear }
+    
+perfil:
+    defaults: {_controller: ProyectoSecurityBundle:Especialista:perfil }
+    pattern: /especialista/perfil
+    
+especialista_creado:
+    defaults: {_controller: ProyectoSecurityBundle:Especialista:bienvenida}
+    pattern: /bienvenida
+    
+    
+#Alumnos
+alta_alumno:
+    pattern:  /alumno/alta
+    defaults: { _controller: ProyectoSecurityBundle:Alumnos:crearAlumno }
+    
+login_alumno:
+    pattern:  /
+    defaults: { _controller: ProyectoSecurityBundle:Alumnos:loginAlumno }    
+    
+eliminar_alumno:
+    defaults: {_controller: ProyectoSecurityBundle:Alumnos:eliminar }
+    pattern: /alumno/delete/{idAlumno}
+
+editar_alumno:
+    defaults: {_controller: ProyectoSecurityBundle:Alumnos:editar }
+    pattern: /alumno/editar/{idAlumno}
+    methods: [GET]
+    
+actualizar_alumno:
+    defaults: {_controller: ProyectoSecurityBundle:Alumnos:actualizar }
+    pattern: /Alumno/editar/{idAlumno}
+    methods: [POST]
+    
+seleccionar_actividad:
+    defaults: {_controller: ProyectoSecurityBundle:Alumnos:seleccionarActividad }
+    pattern: /alumno/seleccionar
+    
+#multimedia:
+#    pattern: /multimedia/subir
+#    defaults: { _controller: ProyectoSecurityBundle:Multimedia:subirMultimedia }
+    
+    
+#Conceptos    
+alta_concepto:
+    pattern: /concepto/alta
+    defaults: {_controller: ProyectoSecurityBundle:Conceptos:altaConcepto }
+    methods: [GET]
+    
+insertar_concepto:
+    pattern: /concepto/alta
+    defaults: {_controller: ProyectoSecurityBundle:Conceptos:insertar }
+    methods: [POST]
+    
+concepto_insert:
+    defaults: {_controller: ProyectoSecurityBundle:Conceptos:insertConcepto}
+    pattern: /concepto/insert
+    
+lista_conceptos:
+    defaults: {_controller: ProyectoSecurityBundle:Conceptos:listarConceptos }
+    pattern: /concepto/list
+    
+buscar_conceptos:
+    defaults: {_controller: ProyectoSecurityBundle:Conceptos:buscar }
+    pattern: /concepto/list/{concepto}
+    
+eliminar_concepto:
+    defaults: {_controller: ProyectoSecurityBundle:Conceptos:eliminar }
+    pattern: /concepto/delete/{idConcepto}
+
+editar_concepto:
+    defaults: {_controller: ProyectoSecurityBundle:Conceptos:editar }
+    pattern: /concepto/editar/{idConcepto}
+    methods: [GET]
+    
+actualizar_concepto:
+    defaults: {_controller: ProyectoSecurityBundle:Conceptos:actualizar }
+    pattern: /concepto/editar/{idConcepto}
+    methods: [POST]
+    
+# Multimedia
+aniadir_multimedia:
+    pattern: /concepto/{idConcepto}/multimedia
+    defaults: {_controller: ProyectoSecurityBundle:Multimedia:aniadir}
+    
+lista_multimedia:
+    pattern: /concepto/{idConcepto}/multimedia/lista
+    defaults: {_controller: ProyectoSecurityBundle:Multimedia:listar}
+    
+eliminar_multimedia:
+    pattern: /concepto/{idConcepto}/multimedia/del/{idMultimedia}
+    defaults: {_controller: ProyectoSecurityBundle:Multimedia:eliminar}
+    
+# Actividad
+
+alta_actividad:
+    pattern: /actividad/alta
+    defaults: {_controller: ProyectoSecurityBundle:Actividad:altaActividad }
+    methods: [GET]
+    
+insertar_actividad:
+    pattern: /actividad/alta
+    defaults: {_controller: ProyectoSecurityBundle:Actividad:insertar }
+    methods: [POST]
+    
+actividad_insert:
+    defaults: {_controller: ProyectoSecurityBundle:Actividad:insertActividad}
+    pattern: /actividad/insert
+    
+lista_actividad:
+    defaults: {_controller: ProyectoSecurityBundle:Actividad:listarActividades }
+    pattern: /actividad/list
+    
+buscar_actividad:
+    defaults: {_controller: ProyectoSecurityBundle:Actividad:buscar }
+    pattern: /actividades/list/{actividad}
+    
+eliminar_actividad:
+    defaults: {_controller: ProyectoSecurityBundle:Actividad:eliminar }
+    pattern: /actividad/delete/{idActividad}
+
+editar_actividad:
+    defaults: {_controller: ProyectoSecurityBundle:Actividad:editar }
+    pattern: /actividad/editar/{idActividad}
+    methods: [GET]
+
+actualizar_actividad:
+    defaults: {_controller: ProyectoSecurityBundle:Actividad:actualizar }
+    pattern: /actividad/editar/{idActividad}
+    methods: [POST]
+    
+#Juego   
+iniciar_juego:
+    defaults: {_controller: ProyectoSecurityBundle:Juego:juego }
+    pattern: /juego/actividad{idActividad}/alumno{idAlumno}

@@ -1,0 +1,221 @@
+{% extends "::baseJuego.html.twig" %}
+{% block title %}Iniciar Juego {% endblock %}
+{% block stylesheets %}
+
+<script type="text/javascript" src="{{ asset('js/wz_jsgraphics.js')}}"></script>
+    {% if alumno.WebPath is not null %}
+    <style type="text/css">
+        body{
+            background: url('{{ asset(alumno.WebPath) }}') transparent content-box;
+        }
+    </style>
+    {% endif %}
+    <style type="text/css">
+        .tamanio{
+            width:120px; 
+            height:120px;
+            margin: 10px;
+        }
+        
+        .margenes{
+            margin: 10px;
+        }
+        
+        .centrar{
+            top: -100px;
+        }
+    </style>
+    
+{% endblock%}
+{% block body %}
+    <script type="text/javascript">
+        var selIzq = null, selDer = null;
+        var aciertos = 0, errores = 0;
+        var error = false;
+        var totalPreguntas = {{ totalPreguntas }};
+        
+        function relacionar(btIzq, btDer){
+            var jg = new jsGraphics("juego");
+            var bt1 = $('#'+btIzq);
+            var bt2 = $('#'+btDer);
+            var posicion1 = bt1.offset(); 
+            var posicion2 = bt2.offset(); 
+            jg.setColor("black");
+            jg.setStroke(10); 
+            jg.drawLine(posicion1.left + bt1.outerWidth(), posicion1.top +  bt1.outerHeight()/2, posicion2.left, posicion2.top + bt2.outerHeight()/2); 
+            jg.paint();
+        }
+        
+        function getSeleccionado(idseleccionado){
+            var seleccionado = $('#'+idseleccionado);
+            if(seleccionado.attr('side') === 'left' && selIzq !== null){
+                selIzq.css("border", "none");
+            }
+            
+            if(seleccionado.attr('side') === 'right' && selDer !== null){
+                selDer.css("border", "none");
+            }
+            seleccionado.css("border", "10px solid blue");
+            
+            if(seleccionado.attr('side') === 'left'){
+                selIzq = seleccionado;
+            }
+            
+            if(seleccionado.attr('side') === 'right'){
+                selDer = seleccionado;
+            }
+            
+            if(selDer !== null && selIzq !== null){
+                comprobar();
+            }
+        }
+        
+        function comprobar(){
+            if(selIzq.attr('solucion') === selDer.attr('solucion')){
+                relacionar(selIzq.attr('id'), selDer.attr('id'));
+                selDer.css("border-color", "green");
+                selDer.attr('acertado', 'acertado');
+                selIzq.css("border-color", "green");
+                selIzq.attr('acertado', 'acertado');
+                aciertos = aciertos+1;
+                selDer = null;
+                selIzq = null;
+            }else{                
+                selDer.css("border-color", "red");                
+                selIzq.css("border-color", "red");
+                
+                errores = errores+1;
+                error = true;
+            }
+        }
+        
+        $(function() { 
+            $('#runner').runner({
+                autostart: true,
+                startAt: 0 // alternatively you could just write: 60*1000
+            });
+            $("button").click(function(event) {
+                if(error){
+                    selDer.attr('acertado') === 'acertado' ? selDer.css("border-color", "green"):selDer.css("border", "none");  
+                    selIzq.attr('acertado') === 'acertado' ? selIzq.css("border-color", "green"):selIzq.css("border", "none");
+                    selDer = null;
+                    selIzq = null; 
+                    error = false;
+                }
+                getSeleccionado(event.target.id);
+                if( aciertos === totalPreguntas){
+                    $('#runner').stop();
+                    tiempo = $('#runner').html();
+                    if(errores > aciertos){
+                        $('#titMensaje').html("Más suerte la próxima vez");
+                    }
+                    $( "div" ).data( "test", { aciertos: aciertos, errores: errores, tiempo: tiempo } );
+                    $( "#aciertos" ).text( $( "div" ).data( "test" ).aciertos );
+                    $( "#fallos" ).text( $( "div" ).data( "test" ).errores );
+                    $('#tiempo').text( $( "div" ).data( "test" ).tiempo );
+                    $( "#mensajeEstadisticas" ).dialog("open");
+                }
+            });
+            $( "#mensajeEstadisticas" ).dialog({
+                autoOpen: false,
+                modal: true,
+                buttons: {
+                    'Reiniciar': function() {
+                        $( this ).dialog( "close" );
+                        location.reload();
+                    },
+                    'Elegir Juego': function(){
+                        $( this ).dialog( "close" );
+                        window.location.href = "{{ path('seleccionar_actividad', {'username' : alumno.usuario})}}";
+                    },
+                    'Salir': function(){
+                        $( this ).dialog( "close" );
+                        window.location.href = "{{ path('login_alumno')}}";
+                    }
+                }
+            });
+        });   
+    </script>
+<div id="mensajeEstadisticas">
+        <h1 id="titMensaje">¡Enhorabuena!</h1>
+        <p>Has finalizado el juego.</p>
+        <p>Tus resultados son:</p>
+        <p>Aciertos: <span id="aciertos"></span></p>
+        <p>Fallos: <span id="fallos"></span></p>
+        <p>Tiempo: <span id="tiempo"></span>
+    </div>    
+<div id="juego">
+    <div class='text-center'>
+    <h1>¡ JUEGA !</h1>
+    <span id="runner" class="hidden"></span>
+    </div>
+    <div style="height: 1em"></div>
+
+    {%for numConceptos in listaIzq%}
+    <div class='row margenes'>
+        <div class="col-md-6 text-center col-xs-6 ">
+            {% if listaIzq[loop.index0]['tipo'] == 0 %} {# Nombre #}
+                <button id="btIzq{{ listaIzq[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default tamanio " side="left" solucion="{{ listaIzq[loop.index0]['solucion'] }}">{{ listaIzq[loop.index0]['concepto'].nombre}}</button>
+            {%elseif listaIzq[loop.index0]['tipo'] == 1 %}{# Descripción #}
+                <button id="btIzq{{ listaIzq[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default tamanio " side="left" solucion="{{ listaIzq[loop.index0]['solucion'] }}">{{ listaIzq[loop.index0]['concepto'].descripcion}}</button>
+            {%elseif listaIzq[loop.index0]['tipo'] == 2  and (listaIzq[loop.index0]['mime'] == 'image/png' or listaIzq[loop.index0]['mime'] == 'image/jpeg'  or listaIzq[loop.index0]['mime'] == 'image/gif' or listaIzq[loop.index0]['mime'] == 'image/bmp')%}
+                {# Imagen #}
+                <button id="btIzq{{ listaIzq[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default  " side="left" tipo="{{listaIzq[loop.index0]['mime']}}" solucion="{{ listaIzq[loop.index0]['solucion'] }}"><img src="{{ asset(listaIzq[loop.index0]['multimedia'].WebPath) }}" width="120" height="120"></button>
+            {% elseif listaIzq[loop.index0]['tipo'] == 2  and (listaIzq[loop.index0]['mime'] == 'audio/mpeg' or listaIzq[loop.index0]['mime'] == 'audio/ogg' or listaIzq[loop.index0]['mime'] == 'video/wav' or listaIzq[loop.index0]['mime'] == 'application/octet-stream')%}
+                {# Audio #}                
+                <audio controls class=" ">
+                    <source src="{{ asset(listaIzq[loop.index0]['multimedia'].WebPath) }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <button id="btIzq{{ listaIzq[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default tamanio " side="left" tipo="{{ listaIzq[loop.index0]['mime'] }}" solucion="{{ listaIzq[loop.index0]['solucion'] }}">
+                    <span class="glyphicon glyphicon-record"></span>
+                </button>
+            {% elseif listaIzq[loop.index0]['tipo'] == 2  and (listaIzq[loop.index0]['mime'] == 'video/mp4' or listaIzq[loop.index0]['mime'] == 'video/webm'  or listaIzq[loop.index0]['mime'] == 'video/ogg')%}
+                {# Video #}
+                <video width="320" height="240" controls class=" ">
+                    <source src="{{ asset(listaIzq[loop.index0]['multimedia'].WebPath) }}" type="{{ listaIzq[loop.index0]['mime'] }}">
+                  Your browser does not support the video tag.
+                </video>
+                <button id="btIzq{{ listaIzq[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default tamanio " side="left" tipo="{{listaIzq[loop.index0]['mime']}}" solucion="{{ listaIzq[loop.index0]['solucion'] }}">
+                     <span class="glyphicon glyphicon-record"></span>
+                </button>
+            {%else%}
+                <div>{{listaIzq[loop.index0]['mime'] }}</div>
+            {%endif %}
+        </div>
+        <div class="col-md-6 text-center col-xs-6">
+            {% if listaDer[loop.index0]['tipo'] == 0 %}
+            <button id="btDer{{ listaDer[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default tamanio " side="right" solucion="{{ listaDer[loop.index0]['solucion'] }}">{{ listaDer[loop.index0]['concepto'].nombre}}</button>
+            {%elseif listaDer[loop.index0]['tipo'] == 1 %}
+            <button id="btDer{{ listaDer[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default tamanio" side="right" solucion="{{ listaDer[loop.index0]['solucion'] }}">{{ listaDer[loop.index0]['concepto'].descripcion}}</button>
+            {%elseif listaDer[loop.index0]['tipo'] == 2  and (listaDer[loop.index0]['mime'] == 'image/png' or listaDer[loop.index0]['mime'] == 'image/jpeg'  or listaDer[loop.index0]['mime'] == 'image/gif' or listaDer[loop.index0]['mime'] == 'image/bmp' )%}
+            <button id="btDer{{ listaDer[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default " side="right" tipo="{{listaDer[loop.index0]['mime']}}" solucion="{{ listaDer[loop.index0]['solucion'] }}"><img src="{{ asset(listaDer[loop.index0]['multimedia'].WebPath) }}" width="120" height="120"></button>
+            {% elseif listaDer[loop.index0]['tipo'] == 2  and (listaDer[loop.index0]['mime'] == 'audio/mpeg' or listaDer[loop.index0]['mime'] == 'audio/ogg' or listaDer[loop.index0]['mime'] == 'video/wav' or listaDer[loop.index0]['mime'] == 'application/octet-stream') %}
+            <button id="btDer{{ listaDer[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default tamanio  " side="right" tipo="{{listaDer[loop.index0]['mime']}}" solucion="{{ listaDer[loop.index0]['solucion'] }}">
+                <span class="glyphicon glyphicon-record"></span>                
+            </button>
+            <audio controls class=" ">
+                    <source src="{{ asset(listaDer[loop.index0]['multimedia'].WebPath) }}" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            {% elseif listaDer[loop.index0]['tipo'] == 2  and (listaDer[loop.index0]['mime'] == 'video/mp4' or listaDer[loop.index0]['mime'] == 'video/webm'  or listaDer[loop.index0]['mime'] == 'video/ogg')%}
+            <div class="pull-right">
+            <table class="text-center"><tr>
+                    <td><button id="btDer{{ listaDer[loop.index0]['concepto'].id }}" class="btn btn-lg btn-default tamanio" side="right" tipo="{{listaDer[loop.index0]['mime']}}" solucion="{{ listaDer[loop.index0]['solucion'] }}">
+                <span class="glyphicon glyphicon-record"></span>                  
+                        </button></td>
+                        <td><video width="320" height="240" controls class="">
+                <source src="{{ asset(listaDer[loop.index0]['multimedia'].WebPath) }}" type="{{ listaDer[loop.index0]['mime'] }}">
+              Your browser does not support the video tag.
+                            </video></td>
+                </tr></table>
+            </div>
+            {%endif %}
+        </div>
+    </div> 
+    {%endfor%}
+</div>
+    
+{% endblock %}
+    
+
